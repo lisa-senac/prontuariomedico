@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Sistema de gerenciamento de prontuários médicos.">
+
+    <title>MedControl | Prontuário Eletrônico</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">+</span>
+            <span>MedControl</span>
+        </div>
+
+        <div class="user-info">
+            <div class="user-avatar">DR</div>
+            <div>
+                <strong>Dr. Responsável</strong>
+                <small>Profissional de saúde</small>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout">
+
+        <aside class="sidebar">
+            <nav class="navigation">
+
+                <span class="menu-title">MENU PRINCIPAL</span>
+
+                <a href="#inicio" class="nav-link active">
+                    <span>⌂</span> Início
+                </a>
+
+                <a href="#pacientes" class="nav-link">
+                    <span>♙</span> Pacientes
+                </a>
+
+                <a href="#cadastro" class="nav-link">
+                    <span>＋</span> Novo prontuário
+                </a>
+
+                <a href="#atendimentos" class="nav-link">
+                    <span>▤</span> Atendimentos
+                </a>
+
+                <span class="menu-title">SISTEMA</span>
+
+                <a href="#seguranca" class="nav-link">
+                    <span>♢</span> Segurança e acesso
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <small>MedControl</small>
+                <small>Versão acadêmica 1.0</small>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <section id="inicio" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">PAINEL DE CONTROLE</span>
+                        <h1>Visão geral</h1>
+                        <p>Gerenciamento de pacientes e atendimentos médicos.</p>
+                    </div>
+
+                    <a href="#cadastro" class="button button-primary">
+                        + Novo paciente
+                    </a>
+                </div>
+
+                <div class="stats-grid">
+
+                    <article class="stat-card">
+                        <div class="stat-icon blue">♙</div>
+                        <div>
+                            <span>Pacientes cadastrados</span>
+                            <strong>128</strong>
+                            <small>Total de prontuários</small>
+                        </div>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon green">▤</div>
+                        <div>
+                            <span>Atendimentos realizados</span>
+                            <strong>356</strong>
+                            <small>Histórico geral</small>
+                        </div>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon orange">◷</div>
+                        <div>
+                            <span>Atendimentos recentes</span>
+                            <strong>12</strong>
+                            <small>Últimos registros</small>
+                        </div>
+                    </article>
+
+                </div>
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+                        <div>
+                            <h2>Atendimentos recentes</h2>
+                            <p>Últimos registros realizados no sistema.</p>
+                        </div>
+
+                        <a href="#atendimentos" class="text-link">
+                            Ver todos
+                        </a>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Data</th>
+                                    <th>Modalidade</th>
+                                    <th>Profissional</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>Maria Oliveira</td>
+                                    <td>05/11/2026</td>
+                                    <td><span class="tag presencial">Presencial</span></td>
+                                    <td>Dr. Responsável</td>
+                                    <td><span class="status completed">Concluído</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>João Santos</td>
+                                    <td>04/11/2026</td>
+                                    <td><span class="tag online">Online</span></td>
+                                    <td>Dr. Responsável</td>
+                                    <td><span class="status completed">Concluído</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Ana Costa</td>
+                                    <td>03/11/2026</td>
+                                    <td><span class="tag presencial">Presencial</span></td>
+                                    <td>Dr. Responsável</td>
+                                    <td><span class="status completed">Concluído</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="cadastro" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">CADASTRO</span>
+                        <h1>Novo prontuário</h1>
+                        <p>Preencha os dados para cadastrar um novo paciente.</p>
+                    </div>
+                </div>
+
+                <form class="content-card patient-form">
+
+                    <div class="form-section">
+                        <h2>Dados pessoais</h2>
+                        <p>Informações de identificação do paciente.</p>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full-width">
+                                <label for="patient-name">
+                                    Nome completo *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="patient-name"
+                                    name="patientName"
+                                    placeholder="Digite o nome completo"
+                                    autocomplete="name"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="patient-cpf">CPF *</label>
+
+                                <input
+                                    type="text"
+                                    id="patient-cpf"
+                                    name="patientCpf"
+                                    placeholder="000.000.000-00"
+                                    inputmode="numeric"
+                                    maxlength="14"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="patient-birth">Data de nascimento *</label>
+
+                                <input
+                                    type="date"
+                                    id="patient-birth"
+                                    name="patientBirth"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="patient-gender">Sexo</label>
+
+                                <select id="patient-gender" name="patientGender">
+                                    <option value="">Selecione</option>
+                                    <option value="feminino">Feminino</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="nao-informado">Prefere não informar</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="patient-phone">Telefone *</label>
+
+                                <input
+                                    type="tel"
+                                    id="patient-phone"
+                                    name="patientPhone"
+                                    placeholder="(00) 00000-0000"
+                                    autocomplete="tel"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="patient-email">E-mail</label>
+
+                                <input
+                                    type="email"
+                                    id="patient-email"
+                                    name="patientEmail"
+                                    placeholder="exemplo@email.com"
+                                    autocomplete="email"
+                                >
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="patient-address">Endereço</label>
+
+                                <input
+                                    type="text"
+                                    id="patient-address"
+                                    name="patientAddress"
+                                    placeholder="Rua, número, bairro e cidade"
+                                    autocomplete="street-address"
+                                >
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="form-section">
+
+                        <h2>Histórico clínico inicial</h2>
+                        <p>Informações importantes sobre a saúde do paciente.</p>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full-width">
+                                <label for="medical-history">
+                                    Histórico de saúde
+                                </label>
+
+                                <textarea
+                                    id="medical-history"
+                                    name="medicalHistory"
+                                    rows="4"
+                                    placeholder="Descreva o histórico clínico do paciente..."
+                                ></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="allergies">Alergias</label>
+
+                                <textarea
+                                    id="allergies"
+                                    name="allergies"
+                                    rows="2"
+                                    placeholder="Informe alergias conhecidas ou ausência de alergias..."
+                                ></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="medications">Medicamentos em uso</label>
+
+                                <textarea
+                                    id="medications"
+                                    name="medications"
+                                    rows="2"
+                                    placeholder="Informe medicamentos utilizados pelo paciente..."
+                                ></textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <span class="required-note">* Campos obrigatórios</span>
+
+                        <div class="form-actions">
+                            <button type="reset" class="button button-secondary">
+                                Limpar
+                            </button>
+
+                            <button type="button" class="button button-primary">
+                                Salvar prontuário
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </section>
+
+            <section id="pacientes" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">GERENCIAMENTO</span>
+                        <h1>Pacientes</h1>
+                        <p>Consulte os pacientes cadastrados no sistema.</p>
+                    </div>
+
+                    <a href="#cadastro" class="button button-primary">
+                        + Novo paciente
+                    </a>
+                </div>
+
+                <div class="content-card">
+
+                    <div class="search-area">
+
+                        <div class="form-group search-field">
+                            <label for="search-patient">Buscar paciente</label>
+
+                            <input
+                                type="search"
+                                id="search-patient"
+                                name="searchPatient"
+                                placeholder="Pesquisar por nome ou CPF..."
+                            >
+                        </div>
+
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>CPF</th>
+                                    <th>Telefone</th>
+                                    <th>Último atendimento</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>Maria Oliveira</td>
+                                    <td>000.000.000-00</td>
+                                    <td>(11) 99999-0000</td>
+                                    <td>05/11/2026</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#cadastro" class="text-link" style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>João Santos</td>
+                                    <td>111.111.111-11</td>
+                                    <td>(11) 98888-0000</td>
+                                    <td>04/11/2026</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#cadastro" class="text-link" style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Ana Costa</td>
+                                    <td>222.222.222-22</td>
+                                    <td>(11) 97777-0000</td>
+                                    <td>03/11/2026</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#cadastro" class="text-link" style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="prontuario" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">PRONTUÁRIO ELETRÔNICO</span>
+                        <h1>Dados do paciente</h1>
+                        <p>Consulta e acompanhamento do histórico clínico.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+
+                    <div class="patient-header">
+                        <div class="patient-avatar">MO</div>
+
+                        <div class="patient-details">
+                            <h2>Maria Oliveira</h2>
+                            <p>CPF: 000.000.000-00</p>
+                            <p>Data de nascimento: 15/05/1990</p>
+                        </div>
+
+                        <span class="status active">Prontuário ativo</span>
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="details-grid">
+
+                        <div>
+                            <span class="detail-label">Telefone</span>
+                            <strong>(11) 99999-0000</strong>
+                        </div>
+
+                        <div>
+                            <span class="detail-label">E-mail</span>
+                            <strong>maria@email.com</strong>
+                        </div>
+
+                        <div>
+                            <span class="detail-label">Alergias</span>
+                            <strong>Não informado</strong>
+                        </div>
+
+                        <div>
+                            <span class="detail-label">Medicamentos</span>
+                            <strong>Não informado</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="card-heading">
+                        <div>
+                            <h2>Histórico de atendimentos</h2>
+                            <p>Registros organizados cronologicamente.</p>
+                        </div>
+
+                        <a href="#novo-atendimento" class="button button-primary">
+                            + Novo atendimento
+                        </a>
+                    </div>
+
+                    <div class="timeline">
+
+                        <article class="timeline-item">
+
+                            <div class="timeline-marker"></div>
+
+                            <div class="timeline-content">
+
+                                <div class="timeline-heading">
+                                    <h3>Consulta de acompanhamento</h3>
+                                    <span class="tag presencial">Presencial</span>
+                                </div>
+
+                                <p class="timeline-date">
+                                    05/11/2026 às 10:30
+                                </p>
+
+                                <p>
+                                    Paciente compareceu para acompanhamento clínico.
+                                    Apresentou evolução positiva.
+                                </p>
+
+                                <div class="record-meta">
+                                    Responsável: Dr. Responsável
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                        <article class="timeline-item">
+
+                            <div class="timeline-marker"></div>
+
+                            <div class="timeline-content">
+
+                                <div class="timeline-heading">
+                                    <h3>Retorno médico</h3>
+                                    <span class="tag online">Online</span>
+                                </div>
+
+                                <p class="timeline-date">
+                                    20/10/2026 às 14:00
+                                </p>
+
+                                <p>
+                                    Atendimento remoto para avaliação da evolução
+                                    do tratamento.
+                                </p>
+
+                                <div class="record-meta">
+                                    Responsável: Dr. Responsável
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="novo-atendimento" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">REGISTRO CLÍNICO</span>
+                        <h1>Novo atendimento</h1>
+                        <p>Registre as informações da consulta médica.</p>
+                    </div>
+                </div>
+
+                <form class="content-card">
+
+                    <div class="form-section">
+
+                        <h2>Identificação do atendimento</h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full-width">
+                                <label for="appointment-patient">Paciente *</label>
+
+                                <select id="appointment-patient" required>
+                                    <option value="">Selecione o paciente</option>
+                                    <option value="paciente-1">Maria Oliveira</option>
+                                    <option value="paciente-2">João Santos</option>
+                                    <option value="paciente-3">Ana Costa</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="appointment-date">Data *</label>
+
+                                <input
+                                    type="date"
+                                    id="appointment-date"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="appointment-time">Horário *</label>
+
+                                <input
+                                    type="time"
+                                    id="appointment-time"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Modalidade *</label>
+
+                                <div class="radio-options">
+
+                                    <label class="radio-label">
+                                        <input
+                                            type="radio"
+                                            name="appointmentType"
+                                            value="presencial"
+                                            required
+                                        >
+                                        Presencial
+                                    </label>
+
+                                    <label class="radio-label">
+                                        <input
+                                            type="radio"
+                                            name="appointmentType"
+                                            value="online"
+                                        >
+                                        Online
+                                    </label>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="form-section">
+
+                        <h2>Informações clínicas</h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full-width">
+                                <label for="diagnosis">Diagnóstico</label>
+
+                                <textarea
+                                    id="diagnosis"
+                                    rows="3"
+                                    placeholder="Descreva o diagnóstico..."
+                                ></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="prescription">Prescrição</label>
+
+                                <textarea
+                                    id="prescription"
+                                    rows="3"
+                                    placeholder="Informe as prescrições médicas..."
+                                ></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="observations">Observações e evolução</label>
+
+                                <textarea
+                                    id="observations"
+                                    rows="4"
+                                    placeholder="Registre a evolução e as observações clínicas..."
+                                ></textarea>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-footer">
+                        <span class="required-note">* Campos obrigatórios</span>
+
+                        <div class="form-actions">
+                            <button type="reset" class="button button-secondary">
+                                Limpar
+                            </button>
+
+                            <button type="button" class="button button-primary">
+                                Registrar atendimento
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </section>
+
+            <section id="atendimentos" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">HISTÓRICO CLÍNICO</span>
+                        <h1>Atendimentos</h1>
+                        <p>Consulte os registros de consultas presenciais e remotas.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+                        <div>
+                            <h2>Todos os atendimentos</h2>
+                            <p>Histórico geral de consultas registradas.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data e hora</th>
+                                    <th>Paciente</th>
+                                    <th>Modalidade</th>
+                                    <th>Profissional</th>
+                                    <th>Registro</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>05/11/2026 - 10:30</td>
+                                    <td>Maria Oliveira</td>
+                                    <td><span class="tag presencial">Presencial</span></td>
+                                    <td>Dr. Responsável</td>
+                                    <td style="display: flex; gap: 10px;"><a href="#prontuario" class="text-link">Visualizar</a><a href="#novo-atendimento" class="text-link" style="color: var(--warning);">Editar</a></td>
+                                </tr>
+
+                                <tr>
+                                    <td>04/11/2026 - 14:00</td>
+                                    <td>João Santos</td>
+                                    <td><span class="tag online">Online</span></td>
+                                    <td>Dr. Responsável</td>
+                                    <td style="display: flex; gap: 10px;"><a href="#prontuario" class="text-link">Visualizar</a><a href="#novo-atendimento" class="text-link" style="color: var(--warning);">Editar</a></td>
+                                </tr>
+
+                                <tr>
+                                    <td>03/11/2026 - 09:00</td>
+                                    <td>Ana Costa</td>
+                                    <td><span class="tag presencial">Presencial</span></td>
+                                    <td>Dr. Responsável</td>
+                                    <td style="display: flex; gap: 10px;"><a href="#prontuario" class="text-link">Visualizar</a><a href="#novo-atendimento" class="text-link" style="color: var(--warning);">Editar</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="seguranca" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">CONTROLE DE ACESSO</span>
+                        <h1>Segurança e acesso</h1>
+                        <p>Informações sobre o profissional responsável pelo sistema.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+
+                    <h2>Usuário conectado</h2>
+
+                    <div class="patient-header">
+                        <div class="user-avatar large">DR</div>
+
+                        <div class="patient-details">
+                            <h3>Dr. Responsável</h3>
+                            <p>Perfil: Profissional autorizado</p>
+                            <p>Identificação: USR-001</p>
+                        </div>
+
+                        <span class="status active">Acesso ativo</span>
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <h2>Rastreabilidade</h2>
+
+                    <p class="security-description">
+                        Os registros do sistema deverão identificar o profissional
+                        responsável, a data e o horário de cada operação.
+                    </p>
+
+                    <div class="audit-example">
+
+                        <strong>Exemplo de registro de auditoria</strong>
+
+                        <p>Operação: Atualização de prontuário</p>
+                        <p>Responsável: Dr. Responsável</p>
+                        <p>Data: 05/11/2026</p>
+                        <p>Horário: 10:45</p>
+
+                    </div>
+
+                </div>
+
+                <div class="content-card danger-card">
+
+                    <h2>Exclusão de prontuário</h2>
+
+                    <p>
+                        A exclusão de um prontuário deverá exigir confirmação
+                        explícita e gerar um registro de auditoria contendo
+                        a data, o horário e o profissional responsável.
+                    </p>
+
+                    <button type="button" class="button button-danger">
+                        Excluir prontuário selecionado
+                    </button>
+
+                    <small>
+                        Controle demonstrativo. A confirmação e a exclusão
+                        efetiva serão implementadas na lógica do sistema.
+                    </small>
+
+                </div>
+
+            </section>
+
+            <footer class="footer">
+                <p>MedControl © 2026 — Projeto acadêmico de prontuário eletrônico.</p>
+            </footer>
+
+        </main>
+
+    </div>
+
+</body>
+</html>
