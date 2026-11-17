@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -180,7 +180,7 @@
                     </div>
                 </div>
 
-                <form class="content-card patient-form">
+                <form id="patient-form" class="content-card patient-form">
 
                     <div class="form-section">
                         <h2>Dados pessoais</h2>
@@ -191,39 +191,21 @@
                             <div class="form-group full-width">
                                 <label for="patient-name">Nome completo *</label>
 
-                                <input
-                                    type="text"
-                                    id="patient-name"
-                                    name="patientName"
-                                    placeholder="Digite o nome completo"
-                                    autocomplete="name"
-                                    required
-                                >
+                                <input type="text" id="patient-name" name="patientName"
+                                    placeholder="Digite o nome completo" autocomplete="name" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="patient-cpf">CPF *</label>
 
-                                <input
-                                    type="text"
-                                    id="patient-cpf"
-                                    name="patientCpf"
-                                    placeholder="000.000.000-00"
-                                    inputmode="numeric"
-                                    maxlength="14"
-                                    required
-                                >
+                                <input type="text" id="patient-cpf" name="patientCpf" placeholder="000.000.000-00"
+                                    inputmode="numeric" maxlength="14" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="patient-birth">Data de nascimento *</label>
 
-                                <input
-                                    type="date"
-                                    id="patient-birth"
-                                    name="patientBirth"
-                                    required
-                                >
+                                <input type="date" id="patient-birth" name="patientBirth" required>
                             </div>
 
                             <div class="form-group">
@@ -240,38 +222,22 @@
                             <div class="form-group">
                                 <label for="patient-phone">Telefone *</label>
 
-                                <input
-                                    type="tel"
-                                    id="patient-phone"
-                                    name="patientPhone"
-                                    placeholder="(00) 00000-0000"
-                                    autocomplete="tel"
-                                    required
-                                >
+                                <input type="tel" id="patient-phone" name="patientPhone" placeholder="(00) 00000-0000"
+                                    autocomplete="tel" required>
                             </div>
 
                             <div class="form-group full-width">
                                 <label for="patient-email">E-mail</label>
 
-                                <input
-                                    type="email"
-                                    id="patient-email"
-                                    name="patientEmail"
-                                    placeholder="exemplo@email.com"
-                                    autocomplete="email"
-                                >
+                                <input type="email" id="patient-email" name="patientEmail"
+                                    placeholder="exemplo@email.com" autocomplete="email">
                             </div>
 
                             <div class="form-group full-width">
                                 <label for="patient-address">Endereço</label>
 
-                                <input
-                                    type="text"
-                                    id="patient-address"
-                                    name="patientAddress"
-                                    placeholder="Rua, número, bairro e cidade"
-                                    autocomplete="street-address"
-                                >
+                                <input type="text" id="patient-address" name="patientAddress"
+                                    placeholder="Rua, número, bairro e cidade" autocomplete="street-address">
                             </div>
 
                         </div>
@@ -289,34 +255,22 @@
                             <div class="form-group full-width">
                                 <label for="medical-history">Histórico de saúde</label>
 
-                                <textarea
-                                    id="medical-history"
-                                    name="medicalHistory"
-                                    rows="4"
-                                    placeholder="Descreva o histórico clínico do paciente..."
-                                ></textarea>
+                                <textarea id="medical-history" name="medicalHistory" rows="4"
+                                    placeholder="Descreva o histórico clínico do paciente..."></textarea>
                             </div>
 
                             <div class="form-group full-width">
                                 <label for="allergies">Alergias</label>
 
-                                <textarea
-                                    id="allergies"
-                                    name="allergies"
-                                    rows="2"
-                                    placeholder="Informe alergias conhecidas ou ausência de alergias..."
-                                ></textarea>
+                                <textarea id="allergies" name="allergies" rows="2"
+                                    placeholder="Informe alergias conhecidas ou ausência de alergias..."></textarea>
                             </div>
 
                             <div class="form-group full-width">
                                 <label for="medications">Medicamentos em uso</label>
 
-                                <textarea
-                                    id="medications"
-                                    name="medications"
-                                    rows="2"
-                                    placeholder="Informe medicamentos utilizados pelo paciente..."
-                                ></textarea>
+                                <textarea id="medications" name="medications" rows="2"
+                                    placeholder="Informe medicamentos utilizados pelo paciente..."></textarea>
                             </div>
 
                         </div>
@@ -329,8 +283,7 @@
                             <button type="reset" class="button button-secondary">
                                 Limpar
                             </button>
-
-                            <button type="button" class="button button-primary">
+                            <button type="submit" class="button button-primary">
                                 Salvar prontuário
                             </button>
                         </div>
@@ -361,12 +314,8 @@
                         <div class="form-group search-field">
                             <label for="search-patient">Buscar paciente</label>
 
-                            <input
-                                type="search"
-                                id="search-patient"
-                                name="searchPatient"
-                                placeholder="Pesquisar por nome ou CPF..."
-                            >
+                            <input type="search" id="search-patient" name="searchPatient"
+                                placeholder="Pesquisar por nome ou CPF...">
                         </div>
 
                     </div>
@@ -383,7 +332,7 @@
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody id="patients-table-body">
                                 <tr>
                                     <td>Maria Oliveira</td>
                                     <td>000.000.000-00</td>
@@ -561,7 +510,7 @@
                     </div>
                 </div>
 
-                <form class="content-card">
+                <form id="appointment-form" class="content-card">
 
                     <div class="form-section">
 
@@ -574,30 +523,19 @@
 
                                 <select id="appointment-patient" required>
                                     <option value="">Selecione o paciente</option>
-                                    <option value="paciente-1">Maria Oliveira</option>
-                                    <option value="paciente-2">João Santos</option>
-                                    <option value="paciente-3">Ana Costa</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="appointment-date">Data *</label>
 
-                                <input
-                                    type="date"
-                                    id="appointment-date"
-                                    required
-                                >
+                                <input type="date" id="appointment-date" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="appointment-time">Horário *</label>
 
-                                <input
-                                    type="time"
-                                    id="appointment-time"
-                                    required
-                                >
+                                <input type="time" id="appointment-time" required>
                             </div>
 
                             <div class="form-group full-width">
@@ -606,21 +544,12 @@
                                 <div class="radio-options">
 
                                     <label class="radio-label">
-                                        <input
-                                            type="radio"
-                                            name="appointmentType"
-                                            value="presencial"
-                                            required
-                                        >
+                                        <input type="radio" name="appointmentType" value="presencial" required>
                                         Presencial
                                     </label>
 
                                     <label class="radio-label">
-                                        <input
-                                            type="radio"
-                                            name="appointmentType"
-                                            value="online"
-                                        >
+                                        <input type="radio" name="appointmentType" value="online">
                                         Online
                                     </label>
 
@@ -642,31 +571,21 @@
                             <div class="form-group full-width">
                                 <label for="diagnosis">Diagnóstico</label>
 
-                                <textarea
-                                    id="diagnosis"
-                                    rows="3"
-                                    placeholder="Descreva o diagnóstico..."
-                                ></textarea>
+                                <textarea id="diagnosis" rows="3" placeholder="Descreva o diagnóstico..."></textarea>
                             </div>
 
                             <div class="form-group full-width">
                                 <label for="prescription">Prescrição</label>
 
-                                <textarea
-                                    id="prescription"
-                                    rows="3"
-                                    placeholder="Informe as prescrições médicas..."
-                                ></textarea>
+                                <textarea id="prescription" rows="3"
+                                    placeholder="Informe as prescrições médicas..."></textarea>
                             </div>
 
                             <div class="form-group full-width">
                                 <label for="observations">Observações e evolução</label>
 
-                                <textarea
-                                    id="observations"
-                                    rows="4"
-                                    placeholder="Registre a evolução e as observações clínicas..."
-                                ></textarea>
+                                <textarea id="observations" rows="4"
+                                    placeholder="Registre a evolução e as observações clínicas..."></textarea>
                             </div>
 
                         </div>
@@ -681,7 +600,7 @@
                                 Limpar
                             </button>
 
-                            <button type="button" class="button button-primary">
+                            <button type="submit" class="button button-primary">
                                 Registrar atendimento
                             </button>
                         </div>
@@ -731,7 +650,8 @@
                                     <td>Dr. Responsável</td>
                                     <td style="display: flex; gap: 10px;">
                                         <a href="#prontuario" class="text-link">Visualizar</a>
-                                        <a href="#novo-atendimento" class="text-link" style="color: var(--warning);">Editar</a>
+                                        <a href="#novo-atendimento" class="text-link"
+                                            style="color: var(--warning);">Editar</a>
                                     </td>
                                 </tr>
 
@@ -742,7 +662,8 @@
                                     <td>Dr. Responsável</td>
                                     <td style="display: flex; gap: 10px;">
                                         <a href="#prontuario" class="text-link">Visualizar</a>
-                                        <a href="#novo-atendimento" class="text-link" style="color: var(--warning);">Editar</a>
+                                        <a href="#novo-atendimento" class="text-link"
+                                            style="color: var(--warning);">Editar</a>
                                     </td>
                                 </tr>
 
@@ -753,7 +674,8 @@
                                     <td>Dr. Responsável</td>
                                     <td style="display: flex; gap: 10px;">
                                         <a href="#prontuario" class="text-link">Visualizar</a>
-                                        <a href="#novo-atendimento" class="text-link" style="color: var(--warning);">Editar</a>
+                                        <a href="#novo-atendimento" class="text-link"
+                                            style="color: var(--warning);">Editar</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -862,4 +784,5 @@
     <script src="./js/app.js"></script>
 
 </body>
+
 </html>
