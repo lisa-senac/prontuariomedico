@@ -1,0 +1,2884 @@
+﻿===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\.vscode\settings.json =====
+{
+    "liveServer.settings.port": 5501
+}
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\api\config\supabase-config.js =====
+import { createClient } from
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const SUPABASE_URL = "COLE_A_URL_DO_PROJETO";
+const SUPABASE_ANON_KEY = "COLE_A_CHAVE_PUBLICA_ANON";
+
+export const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\api\services\autenticacao-service.js =====
+import { supabase } from "../config/supabase-config.js";
+
+export async function cadastrarUsuario(email, senha) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password: senha
+  });
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function fazerLogin(email, senha) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password: senha
+  });
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function fazerLogout() {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) throw error;
+
+  return true;
+}
+
+export async function obterUsuarioLogado() {
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) throw error;
+
+  return data.user;
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\api\services\paciente-service.js =====
+import { supabase } from "../config/supabase-config.js";
+
+const TABELA = "patients";
+
+export async function listarPacientes() {
+  const { data, error } = await supabase
+    .from(TABELA)
+    .select("*")
+    .order("name");
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function buscarPaciente(id) {
+  const { data, error } = await supabase
+    .from(TABELA)
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function cadastrarPaciente(paciente) {
+  const { data, error } = await supabase
+    .from(TABELA)
+    .insert(paciente)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function atualizarPaciente(id, dados) {
+  const { data, error } = await supabase
+    .from(TABELA)
+    .update(dados)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function excluirPaciente(id) {
+  const { error } = await supabase
+    .from(TABELA)
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+
+  return true;
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\api\services\prontuario-service.js =====
+import { supabase } from "../config/supabase-config.js";
+
+const TABELA = "appointments";
+
+export async function listarProntuarios() {
+  const { data, error } = await supabase
+    .from(TABELA)
+    .select("*")
+    .order("appointment_date", { ascending: false });
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function buscarProntuario(id) {
+  const { data, error } = await supabase
+    .from(TABELA)
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function cadastrarProntuario(prontuario) {
+  const { data, error } = await supabase
+    .from(TABELA)
+    .insert(prontuario)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function atualizarProntuario(id, dados) {
+  const { data, error } = await supabase
+    .from(TABELA)
+    .update(dados)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function excluirProntuario(id) {
+  const { error } = await supabase
+    .from(TABELA)
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+
+  return true;
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\api\utils\api-helper.js =====
+export async function executarRequisicao(requisicao) {
+  try {
+    return await requisicao();
+  } catch (error) {
+    console.error("Erro na operaÃ§Ã£o:", error);
+
+    throw new Error(
+      error.message || "NÃ£o foi possÃ­vel concluir a operaÃ§Ã£o."
+    );
+  }
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\api\index.js =====
+export * from "./services/paciente-service.js";
+export * from "./services/prontuario-service.js";
+export * from "./services/autenticacao-service.js";
+
+export { supabase } from "./config/supabase-config.js";
+export { executarRequisicao } from "./utils/api-helper.js";
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\css\style.css =====
+
+/* 1. CONFIGURAÃ‡Ã•ES GERAIS */
+
+:root {
+    --primary: #2563a6;
+    --primary-dark: #194b80;
+    --primary-light: #eaf2fb;
+
+    --background: #f4f7fb;
+    --surface: #ffffff;
+
+    --text: #253247;
+    --text-secondary: #718096;
+
+    --border: #e2e8f0;
+
+    --success: #168653;
+    --success-light: #e5f6ed;
+
+    --warning: #c47b19;
+    --warning-light: #fff4df;
+
+    --danger: #d64545;
+    --danger-light: #fff0f0;
+
+    --radius: 10px;
+
+    --shadow: 0 2px 10px rgba(30, 50, 80, 0.05);
+}
+
+/* Reset bÃ¡sico */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--text);
+}
+
+h1 {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+p {
+    color: var(--text-secondary);
+}
+
+
+/*  2. CABEÃ‡ALHO */
+
+.header {
+    height: 70px;
+    background-color: var(--surface);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    border-bottom: 1px solid var(--border);
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--primary);
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.logo-icon {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--primary);
+    color: white;
+
+    border-radius: 8px;
+    font-size: 24px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-info strong {
+    display: block;
+    font-size: 13px;
+}
+
+.user-info small {
+    color: var(--text-secondary);
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--primary-light);
+    color: var(--primary);
+
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.user-avatar.large {
+    width: 52px;
+    height: 52px;
+    font-size: 17px;
+}
+
+
+/* 3. ESTRUTURA PRINCIPAL */
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 70px);
+}
+
+.sidebar {
+    width: 230px;
+    flex-shrink: 0;
+
+    background-color: var(--surface);
+    border-right: 1px solid var(--border);
+
+    padding: 25px 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.menu-title {
+    margin: 18px 10px 8px;
+
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    color: var(--text-secondary);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px;
+
+    border-radius: 7px;
+
+    color: var(--text-secondary);
+
+    transition: 0.2s;
+}
+
+.nav-link span {
+    width: 18px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    padding: 15px 10px;
+
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+
+    padding: 30px;
+}
+
+
+/* 4. SEÃ‡Ã•ES E TÃTULOS */
+
+.section {
+    scroll-margin-top: 90px;
+    margin-bottom: 45px;
+}
+
+.page-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+.page-heading h1 {
+    margin: 5px 0;
+}
+
+.subtitle {
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.2px;
+}
+
+.page-heading p {
+    font-size: 13px;
+}
+
+
+/* 5. BOTÃ•ES */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+    padding: 10px 17px;
+
+    border: none;
+    border-radius: 7px;
+
+    font-weight: 600;
+    font-size: 13px;
+
+    transition: 0.2s;
+}
+
+.button-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.button-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.button-secondary {
+    background-color: #edf1f6;
+    color: var(--text);
+}
+
+.button-secondary:hover {
+    background-color: #dfe6ef;
+}
+
+.button-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.button-danger:hover {
+    background-color: #b92f2f;
+}
+
+
+/* 6. CARDS E INDICADORES */
+
+.content-card {
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 24px;
+    margin-bottom: 22px;
+
+    box-shadow: var(--shadow);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    background-color: var(--surface);
+
+    padding: 22px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    font-size: 22px;
+}
+
+.stat-icon.blue {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.stat-icon.green {
+    background-color: var(--success-light);
+    color: var(--success);
+}
+
+.stat-icon.orange {
+    background-color: var(--warning-light);
+    color: var(--warning);
+}
+
+.stat-card span,
+.stat-card small {
+    display: block;
+    color: var(--text-secondary);
+}
+
+.stat-card strong {
+    display: block;
+    font-size: 25px;
+    margin: 3px 0;
+}
+
+
+/* 7. TÃTULOS INTERNOS DOS CARDS */
+
+.card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.card-heading p {
+    font-size: 12px;
+}
+
+.text-link {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.text-link:hover {
+    text-decoration: underline;
+}
+
+
+/* 8. TABELAS */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+th {
+    padding: 14px 12px;
+
+    text-align: left;
+
+    color: var(--text-secondary);
+    background-color: #f8fafc;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    border-bottom: 1px solid var(--border);
+}
+
+td {
+    padding: 15px 12px;
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--text);
+    font-size: 12px;
+}
+
+tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+
+/* 9. ETIQUETAS E STATUS */
+
+.tag,
+.status {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.tag.presencial {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.tag.online {
+    background-color: #f0eaff;
+    color: #7550b8;
+}
+
+.status.completed,
+.status.active {
+    background-color: var(--success-light);
+    color: var(--success);
+}
+
+
+/* 10. FORMULÃRIOS */
+
+.form-section h2 {
+    margin-bottom: 5px;
+}
+
+.form-section > p {
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    min-width: 0;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+
+    padding: 11px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    background-color: white;
+    color: var(--text);
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 166, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #a0aaba;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-divider {
+    height: 1px;
+    background-color: var(--border);
+
+    margin: 25px 0;
+}
+
+.form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-top: 25px;
+}
+
+.required-note {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+
+/* 11. BUSCA DE PACIENTES */
+
+.search-area {
+    margin-bottom: 20px;
+}
+
+.search-field {
+    max-width: 420px;
+}
+
+
+/* 12. DADOS DO PACIENTE */
+
+.patient-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.patient-avatar {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background-color: var(--primary-light);
+    color: var(--primary);
+
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.patient-details {
+    flex: 1;
+}
+
+.patient-details h2,
+.patient-details h3 {
+    margin-bottom: 5px;
+}
+
+.patient-details p {
+    font-size: 12px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+.details-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-label {
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.details-grid strong {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* 13. HISTÃ“RICO CRONOLÃ“GICO */
+
+.timeline {
+    margin-top: 25px;
+    margin-left: 8px;
+
+    border-left: 2px solid var(--border);
+}
+
+.timeline-item {
+    position: relative;
+    padding: 0 0 30px 25px;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-marker {
+    position: absolute;
+
+    width: 12px;
+    height: 12px;
+
+    left: -7px;
+    top: 5px;
+
+    background-color: var(--primary);
+
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.timeline-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.timeline-heading h3 {
+    font-size: 14px;
+}
+
+.timeline-date {
+    font-size: 11px;
+    margin: 6px 0;
+}
+
+.timeline-content > p:not(.timeline-date) {
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.record-meta {
+    color: var(--text-secondary);
+    font-size: 11px;
+    margin-top: 10px;
+}
+
+
+/* 14. OPÃ‡Ã•ES DE ATENDIMENTO */
+
+.radio-options {
+    display: flex;
+    gap: 25px;
+    padding: 8px 0;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.radio-label input {
+    accent-color: var(--primary);
+}
+
+
+/* 15. SEGURANÃ‡A E AUDITORIA */
+
+.security-description {
+    font-size: 13px;
+    margin: 10px 0 20px;
+}
+
+.audit-example {
+    padding: 18px;
+
+    background-color: var(--primary-light);
+    border-radius: 8px;
+
+    border-left: 4px solid var(--primary);
+}
+
+.audit-example strong {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.audit-example p {
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: var(--text);
+}
+
+.danger-card {
+    border-left: 4px solid var(--danger);
+}
+
+.danger-card p {
+    margin: 12px 0 18px;
+    font-size: 13px;
+}
+
+.danger-card small {
+    display: block;
+    margin-top: 12px;
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+
+/* 16. RODAPÃ‰ */
+
+.footer {
+    padding: 25px 0;
+    border-top: 1px solid var(--border);
+
+    text-align: center;
+}
+
+.footer p {
+    font-size: 11px;
+}
+
+
+/* 17. RESPONSIVIDADE - TABLETS */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        width: 190px;
+    }
+
+    .main-content {
+        padding: 22px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* 18. RESPONSIVIDADE - CELULARES */
+
+@media (max-width: 600px) {
+
+    .header {
+        height: 62px;
+        padding: 0 15px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .user-info strong {
+        font-size: 11px;
+    }
+
+    .user-info small {
+        font-size: 10px;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 10px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .navigation {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .menu-title,
+    .sidebar-footer {
+        display: none;
+    }
+
+    .nav-link {
+        padding: 9px;
+        font-size: 11px;
+    }
+
+    .nav-link span {
+        font-size: 15px;
+    }
+
+    .main-content {
+        padding: 18px 12px;
+    }
+
+    .page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .page-heading h1 {
+        font-size: 22px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .content-card {
+        padding: 16px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .form-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .form-actions {
+        width: 100%;
+    }
+
+    .form-actions .button {
+        flex: 1;
+    }
+
+    .patient-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .patient-header > .status {
+        margin-left: 0;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .card-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .search-field {
+        max-width: 100%;
+    }
+
+    .radio-options {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .footer {
+        padding: 20px 5px;
+    }
+
+}
+
+
+/* 19. ACESSIBILIDADE */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid rgba(37, 99, 166, 0.35);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\docs\integracao-api.md =====
+# MedControl - IntegraÃ§Ã£o da API
+
+## Objetivo
+
+Centralizar a comunicaÃ§Ã£o entre o protÃ³tipo MedControl
+e o banco de dados.
+
+## Tecnologias
+
+- JavaScript ES Modules
+- Supabase JavaScript Client
+- Supabase Auth
+- PostgreSQL (gerenciado pelo Supabase)
+
+## OrganizaÃ§Ã£o
+
+- config: configuraÃ§Ã£o da conexÃ£o.
+- services: operaÃ§Ãµes de pacientes, prontuÃ¡rios e autenticaÃ§Ã£o.
+- utils: tratamento de erros.
+- index.js: exportaÃ§Ã£o dos serviÃ§os.
+
+## OperaÃ§Ãµes disponÃ­veis
+
+### Pacientes
+- Listar pacientes.
+- Buscar paciente por ID.
+- Cadastrar paciente.
+- Atualizar paciente.
+- Excluir paciente.
+
+### ProntuÃ¡rios
+- Listar prontuÃ¡rios.
+- Buscar prontuÃ¡rio por ID.
+- Cadastrar prontuÃ¡rio.
+- Atualizar prontuÃ¡rio.
+- Excluir prontuÃ¡rio.
+
+### AutenticaÃ§Ã£o
+- Cadastrar usuÃ¡rio.
+- Fazer login.
+- Fazer logout.
+- Consultar usuÃ¡rio autenticado.
+
+## ConfiguraÃ§Ã£o
+
+1. Criar o projeto no Supabase.
+2. Configurar a URL e a chave pÃºblica no arquivo
+   supabase-config.js.
+3. Criar as tabelas e polÃ­ticas de acesso no banco.
+4. Integrar os serviÃ§os Ã s telas do protÃ³tipo.
+5. Executar os testes de integraÃ§Ã£o.
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\js\app.js =====
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("MedControl iniciado.");
+
+    if (!window.MedControl) {
+        console.warn(
+            "Cliente Supabase nÃ£o inicializado. Verifique a configuraÃ§Ã£o."
+        );
+
+        return;
+    }
+
+    console.log("Cliente Supabase carregado.");
+
+    inicializarDashboard();
+    inicializarPacientes();
+    inicializarProntuarios();
+    inicializarAtendimentos();
+    inicializarHistorico();
+});
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\js\atendimentos.js =====
+
+let atendimentoEmEdicaoId = null;
+
+async function inicializarAtendimentos() {
+    console.log("MÃ³dulo de atendimentos inicializado.");
+
+    const formulario = document.getElementById("appointment-form");
+
+    if (formulario) {
+        formulario.addEventListener("submit", salvarAtendimento);
+
+        formulario.addEventListener("reset", () => {
+            atendimentoEmEdicaoId = null;
+
+            const botaoSalvar = formulario.querySelector(
+                'button[type="submit"]'
+            );
+
+            if (botaoSalvar) {
+                botaoSalvar.textContent = "Registrar atendimento";
+            }
+        });
+    }
+
+    document.getElementById("appointment-form").reset();
+
+    await carregarAtendimentos();
+
+    document.querySelector('a[href="#atendimentos"]').click();
+}
+
+async function carregarAtendimentos() {
+    try {
+        const [atendimentos, pacientes] = await Promise.all([
+            window.MedControl.appointments.list(),
+            window.MedControl.patients.list()
+        ]);
+
+        const nomesPacientes = new Map(
+            pacientes.map(paciente => [
+                paciente.id,
+                paciente.full_name
+            ])
+        );
+
+        const tabela = document.getElementById("appointments-table-body");
+
+        if (!tabela) {
+            console.error("Tabela de atendimentos nÃ£o encontrada.");
+            return;
+        }
+
+        tabela.innerHTML = "";
+
+        atendimentos.forEach(atendimento => {
+            const linha = document.createElement("tr");
+
+            const colunaData = document.createElement("td");
+            colunaData.textContent = formatarDataHora(
+                atendimento.appointment_date,
+                atendimento.appointment_time
+            );
+
+            const colunaPaciente = document.createElement("td");
+            colunaPaciente.textContent =
+                nomesPacientes.get(atendimento.patient_id) || "Paciente nÃ£o encontrado";
+
+            const colunaModalidade = document.createElement("td");
+            colunaModalidade.textContent =
+                atendimento.appointment_type === "presencial"
+                    ? "Presencial"
+                    : "Online";
+
+            const colunaProfissional = document.createElement("td");
+            colunaProfissional.textContent = "â€”";
+
+            const colunaRegistro = document.createElement("td");
+
+            const descricao = document.createElement("span");
+            descricao.textContent = atendimento.diagnosis || "Sem diagnÃ³stico";
+
+            const botaoEditar = document.createElement("button");
+            botaoEditar.type = "button";
+            botaoEditar.className = "text-link";
+            botaoEditar.textContent = "Editar";
+            botaoEditar.style.marginLeft = "10px";
+            botaoEditar.addEventListener("click", () => {
+                editarAtendimento(atendimento);
+            });
+
+            const botaoExcluir = document.createElement("button");
+            botaoExcluir.type = "button";
+            botaoExcluir.className = "text-link";
+            botaoExcluir.textContent = "Excluir";
+            botaoExcluir.style.color = "var(--danger)";
+            botaoExcluir.style.marginLeft = "10px";
+            botaoExcluir.addEventListener("click", () => {
+                excluirAtendimento(atendimento.id);
+            });
+
+            colunaRegistro.appendChild(descricao);
+            colunaRegistro.appendChild(botaoEditar);
+            colunaRegistro.appendChild(botaoExcluir);
+
+            linha.appendChild(colunaData);
+            linha.appendChild(colunaPaciente);
+            linha.appendChild(colunaModalidade);
+            linha.appendChild(colunaProfissional);
+            linha.appendChild(colunaRegistro);
+
+            tabela.appendChild(linha);
+        });
+
+        console.log("Atendimentos carregados:", atendimentos);
+
+    } catch (error) {
+        console.error("Erro ao carregar atendimentos:", error);
+    }
+}
+
+async function salvarAtendimento(event) {
+    event.preventDefault();
+
+    try {
+        const tipoSelecionado = document.querySelector(
+            'input[name="appointmentType"]:checked'
+        );
+
+        if (!tipoSelecionado) {
+            alert("Selecione a modalidade do atendimento.");
+            return;
+        }
+
+        const atendimento = {
+            patient_id: document.getElementById("appointment-patient").value,
+            appointment_date: document.getElementById("appointment-date").value,
+            appointment_time: document.getElementById("appointment-time").value,
+            appointment_type: tipoSelecionado.value,
+            diagnosis: document.getElementById("diagnosis").value.trim() || null,
+            prescription: document.getElementById("prescription").value.trim() || null,
+            observations: document.getElementById("observations").value.trim() || null
+        };
+
+        if (atendimentoEmEdicaoId) {
+            await window.MedControl.appointments.update(
+                atendimentoEmEdicaoId,
+                atendimento
+            );
+
+            alert("Atendimento atualizado com sucesso!");
+        } else {
+            await window.MedControl.appointments.create(atendimento);
+
+            alert("Atendimento registrado com sucesso!");
+        }
+
+        atendimentoEmEdicaoId = null;
+
+        document.getElementById("appointment-form").reset();
+
+        await carregarAtendimentos();
+
+    } catch (error) {
+        console.error("Erro ao salvar atendimento:", error);
+        alert("NÃ£o foi possÃ­vel salvar o atendimento. Verifique o Console.");
+    }
+}
+
+function editarAtendimento(atendimento) {
+    atendimentoEmEdicaoId = atendimento.id;
+
+    document.getElementById("appointment-patient").value =
+        atendimento.patient_id || "";
+
+    document.getElementById("appointment-date").value =
+        atendimento.appointment_date || "";
+
+    document.getElementById("appointment-time").value =
+        atendimento.appointment_time || "";
+
+    document.getElementById("diagnosis").value =
+        atendimento.diagnosis || "";
+
+    document.getElementById("prescription").value =
+        atendimento.prescription || "";
+
+    document.getElementById("observations").value =
+        atendimento.observations || "";
+
+    const modalidade = document.querySelector(
+        `input[name="appointmentType"][value="${atendimento.appointment_type}"]`
+    );
+
+    if (modalidade) {
+        modalidade.checked = true;
+    }
+
+    const botaoSalvar = document.querySelector(
+        '#appointment-form button[type="submit"]'
+    );
+
+    if (botaoSalvar) {
+        botaoSalvar.textContent = "Atualizar atendimento";
+    }
+
+    document.getElementById("novo-atendimento").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+async function excluirAtendimento(id) {
+    const confirmar = confirm(
+        "Tem certeza de que deseja excluir este atendimento?"
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+        await window.MedControl.appointments.remove(id);
+
+        alert("Atendimento excluÃ­do com sucesso!");
+
+        await carregarAtendimentos();
+
+    } catch (error) {
+        console.error("Erro ao excluir atendimento:", error);
+        alert("NÃ£o foi possÃ­vel excluir o atendimento. Verifique o Console.");
+    }
+}
+
+function formatarDataHora(data, horario) {
+    if (!data) {
+        return "â€”";
+    }
+
+    const [ano, mes, dia] = data.split("-");
+    const dataFormatada = `${dia}/${mes}/${ano}`;
+
+    return horario
+        ? `${dataFormatada} Ã s ${horario.substring(0, 5)}`
+        : dataFormatada;
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\js\dashboard.js =====
+function inicializarDashboard() {
+    console.log("Dashboard inicializado.");
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\js\historico.js =====
+function inicializarHistorico() {
+    console.log("MÃ³dulo de histÃ³rico inicializado.");
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\js\medcontrol-api.js =====
+// MedControl | Cliente Supabase
+// Inclua o SDK antes deste arquivo no index.html:
+// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+// <script src="js/medcontrol-api.js"></script>
+//
+// Configure URL e chave pÃºblica (anon/publishable) do projeto Supabase.
+// Nunca coloque a chave service_role no frontend.
+
+(() => {
+    "use strict";
+
+    const SUPABASE_URL = "https://omeuytyjhakohihbbqjs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_kcUFX5pNxpimKfSt9JtHWQ_jcjs4-Nb";
+
+    if (!window.supabase) {
+        console.error("SDK do Supabase nÃ£o carregado.");
+        return;
+    }
+
+    if (!SUPABASE_URL.startsWith("https://") ||
+        !SUPABASE_ANON_KEY.startsWith("sb_publishable_")) {
+        console.warn("Configure SUPABASE_URL e SUPABASE_ANON_KEY em js/medcontrol-api.js.");
+    }
+
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function requireUser() {
+        const { data, error } = await client.auth.getUser();
+        if (error || !data.user) {
+            throw new Error("FaÃ§a login para acessar os dados do MedControl.");
+        }
+        return data.user;
+    }
+
+    function normalizeError(error) {
+        console.error("[MedControl]", error);
+        if (error?.code === "23505") return new Error("JÃ¡ existe um paciente com esse CPF.");
+        if (error?.code === "23503") return new Error("NÃ£o foi possÃ­vel concluir: existe um vÃ­nculo com outro registro.");
+        return new Error(error?.message || "Ocorreu um erro ao acessar os dados.");
+    }
+
+    async function run(query) {
+        const { data, error } = await query;
+        if (error) throw normalizeError(error);
+        return data;
+    }
+
+    const auth = {
+        async signUp(email, password) {
+            return run(client.auth.signUp({ email, password }));
+        },
+        async signIn(email, password) {
+            return run(client.auth.signInWithPassword({ email, password }));
+        },
+        async signOut() {
+            return run(client.auth.signOut());
+        },
+        async currentUser() {
+            const { data, error } = await client.auth.getSession();
+
+            if (error) {
+                throw normalizeError(error);
+            }
+
+            return data.session?.user || null;
+        }
+    };
+
+    const patients = {
+        async list(search = "") {
+            const user = await requireUser();
+            let query = client.from("patients")
+                .select("*")
+                .eq("owner_id", user.id)
+                .order("full_name", { ascending: true });
+
+            if (search.trim()) {
+                const safe = search.trim().replace(/[,%()]/g, "");
+                query = query.ilike("full_name", `%${safe}%`);
+            }
+            return run(query);
+        },
+
+        async get(id) {
+            const user = await requireUser();
+            return run(client.from("patients")
+                .select("*").eq("id", id).eq("owner_id", user.id).single());
+        },
+
+        async create(input) {
+            const user = await requireUser();
+            const payload = { ...input, owner_id: user.id };
+            return run(client.from("patients").insert(payload).select().single());
+        },
+
+        async update(id, input) {
+            const user = await requireUser();
+            return run(client.from("patients").update(input)
+                .eq("id", id).eq("owner_id", user.id).select().single());
+        },
+
+        async remove(id) {
+            const user = await requireUser();
+            return run(client.from("patients").delete()
+                .eq("id", id).eq("owner_id", user.id));
+        }
+    };
+
+    const appointments = {
+        async list(patientId = null) {
+            const user = await requireUser();
+            let query = client.from("appointments")
+                .select("*, patients(id, full_name)")
+                .eq("owner_id", user.id)
+                .order("appointment_date", { ascending: false })
+                .order("appointment_time", { ascending: false });
+            if (patientId) query = query.eq("patient_id", patientId);
+            return run(query);
+        },
+
+        async create(input) {
+            const user = await requireUser();
+            return run(client.from("appointments")
+                .insert({ ...input, owner_id: user.id }).select().single());
+        },
+
+        async update(id, input) {
+            const user = await requireUser();
+            return run(client.from("appointments").update(input)
+                .eq("id", id).eq("owner_id", user.id).select().single());
+        },
+
+        async remove(id) {
+            const user = await requireUser();
+            return run(client.from("appointments").delete()
+                .eq("id", id).eq("owner_id", user.id));
+        }
+    };
+
+    const audit = {
+        async list(limit = 50) {
+            const user = await requireUser();
+            return run(client.from("audit_logs").select("*")
+                .eq("owner_id", user.id)
+                .order("occurred_at", { ascending: false })
+                .limit(Math.min(Math.max(limit, 1), 100)));
+        }
+    };
+
+    window.MedControl = { client, auth, patients, appointments, audit };
+})();
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\js\pacientes.js =====
+
+let pacienteEmEdicaoId = null;
+
+async function inicializarPacientes() {
+
+    console.log("MÃ³dulo de pacientes inicializado.");
+
+    const formulario = document.getElementById("patient-form");
+
+    if (formulario) {
+        formulario.addEventListener("submit", cadastrarPaciente);
+
+        formulario.addEventListener("reset", () => {
+            pacienteEmEdicaoId = null;
+
+            const botaoSalvar = formulario.querySelector(
+                'button[type="submit"]'
+            );
+
+            botaoSalvar.textContent = "Salvar prontuÃ¡rio";
+        });
+    }
+
+    await carregarPacientes();
+}
+
+async function carregarPacientes() {
+
+    try {
+
+        const pacientes = await window.MedControl.patients.list();
+
+        // Atualiza a seleÃ§Ã£o de pacientes nos atendimentos
+        const selecaoPaciente = document.getElementById("appointment-patient");
+
+        if (selecaoPaciente) {
+
+            selecaoPaciente.innerHTML =
+                '<option value="">Selecione o paciente</option>';
+
+            pacientes.forEach(paciente => {
+
+                const opcao = document.createElement("option");
+
+                opcao.value = paciente.id;
+                opcao.textContent = paciente.full_name;
+
+                selecaoPaciente.appendChild(opcao);
+
+            });
+        }
+
+        console.log("Pacientes carregados:", pacientes);
+
+        // Atualiza a tabela de pacientes
+        const tabela = document.getElementById("patients-table-body");
+
+        if (!tabela) {
+            console.error("Tabela de pacientes nÃ£o encontrada.");
+            return;
+        }
+
+        tabela.innerHTML = "";
+
+        pacientes.forEach(paciente => {
+
+            const linha = document.createElement("tr");
+
+            const campos = [
+                paciente.full_name,
+                paciente.cpf,
+                paciente.phone || "",
+                "â€”"
+            ];
+
+            campos.forEach(valor => {
+
+                const coluna = document.createElement("td");
+
+                coluna.textContent = valor;
+
+                linha.appendChild(coluna);
+
+            });
+
+            // Coluna de aÃ§Ãµes
+            const colunaAcoes = document.createElement("td");
+
+            const botaoEditar = document.createElement("button");
+
+            botaoEditar.type = "button";
+            botaoEditar.className = "text-link";
+            botaoEditar.textContent = "Editar";
+
+            botaoEditar.addEventListener("click", () => {
+                editarPaciente(paciente);
+            });
+
+            const botaoExcluir = document.createElement("button");
+
+            botaoExcluir.type = "button";
+            botaoExcluir.className = "text-link";
+            botaoExcluir.textContent = "Excluir";
+
+            botaoExcluir.style.color = "var(--danger)";
+            botaoExcluir.style.marginLeft = "10px";
+
+            botaoExcluir.addEventListener("click", () => {
+                excluirPaciente(paciente.id);
+            });
+
+            colunaAcoes.appendChild(botaoEditar);
+            colunaAcoes.appendChild(botaoExcluir);
+
+            linha.appendChild(colunaAcoes);
+
+            tabela.appendChild(linha);
+
+        });
+
+    } catch (error) {
+
+        console.error("Erro ao carregar pacientes:", error);
+
+    }
+}
+
+async function cadastrarPaciente(event) {
+
+    event.preventDefault();
+
+    try {
+
+        const paciente = {
+
+            full_name: document.getElementById("patient-name").value.trim(),
+
+            cpf: document.getElementById("patient-cpf").value.trim(),
+
+            birth_date: document.getElementById("patient-birth").value,
+
+            gender: document.getElementById("patient-gender").value || null,
+
+            phone: document.getElementById("patient-phone").value.trim(),
+
+            email: document.getElementById("patient-email").value.trim() || null,
+
+            address: document.getElementById("patient-address").value.trim() || null,
+
+            medical_history: document.getElementById("medical-history").value.trim() || null,
+
+            allergies: document.getElementById("allergies").value.trim() || null,
+
+            medications: document.getElementById("medications").value.trim() || null
+
+        };
+
+        if (pacienteEmEdicaoId) {
+
+            await window.MedControl.patients.update(
+                pacienteEmEdicaoId,
+                paciente
+            );
+
+            alert("Paciente atualizado com sucesso!");
+
+        } else {
+
+            await window.MedControl.patients.create(paciente);
+
+            alert("Paciente cadastrado com sucesso!");
+
+        }
+
+        pacienteEmEdicaoId = null;
+
+        document.getElementById("patient-form").reset();
+
+        await carregarPacientes();
+
+    } catch (error) {
+
+        console.error("Erro ao salvar paciente:", error);
+
+        alert("NÃ£o foi possÃ­vel salvar o paciente. Verifique o Console.");
+
+    }
+
+}
+
+// EDITAR PACIENTE
+function editarPaciente(paciente) {
+
+    pacienteEmEdicaoId = paciente.id;
+
+    document.getElementById("patient-name").value = paciente.full_name || "";
+
+    document.getElementById("patient-cpf").value = paciente.cpf || "";
+
+    document.getElementById("patient-birth").value = paciente.birth_date || "";
+
+    document.getElementById("patient-gender").value = paciente.gender || "";
+
+    document.getElementById("patient-phone").value = paciente.phone || "";
+
+    document.getElementById("patient-email").value = paciente.email || "";
+
+    document.getElementById("patient-address").value = paciente.address || "";
+
+    document.getElementById("medical-history").value =
+        paciente.medical_history || "";
+
+    document.getElementById("allergies").value = paciente.allergies || "";
+
+    document.getElementById("medications").value = paciente.medications || "";
+
+    const botaoSalvar = document.querySelector(
+        '#patient-form button[type="submit"]'
+    );
+
+    botaoSalvar.textContent = "Atualizar paciente";
+
+    document.getElementById("cadastro").scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+// EXCLUIR PACIENTE
+async function excluirPaciente(id) {
+
+    const confirmar = confirm(
+        "Tem certeza de que deseja excluir este paciente?"
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+
+        await window.MedControl.patients.remove(id);
+
+        alert("Paciente excluÃ­do com sucesso!");
+
+        await carregarPacientes();
+
+    } catch (error) {
+
+        console.error("Erro ao excluir paciente:", error);
+
+        alert(
+            "NÃ£o foi possÃ­vel excluir o paciente. Verifique se existem atendimentos vinculados."
+        );
+
+    }
+
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\js\prontuarios.js =====
+
+async function inicializarProntuarios() {
+
+    console.log("MÃ³dulo de prontuÃ¡rios inicializado.");
+
+    const botaoExcluir = document.getElementById(
+        "excluir-prontuario"
+    );
+
+    if (botaoExcluir) {
+        botaoExcluir.addEventListener("click", excluirProntuarioSelecionado);
+    }
+
+    await carregarProntuarios();
+}
+
+async function carregarProntuarios() {
+
+    try {
+
+        const [atendimentos, pacientes] = await Promise.all([
+            window.MedControl.appointments.list(),
+            window.MedControl.patients.list()
+        ]);
+
+        const selecao = document.getElementById(
+            "prontuario-selecionado"
+        );
+
+        if (!selecao) {
+            return;
+        }
+
+        selecao.innerHTML =
+            '<option value="">Selecione um atendimento</option>';
+
+        atendimentos.forEach(atendimento => {
+
+            const paciente = pacientes.find(
+                pessoa => pessoa.id === atendimento.patient_id
+            );
+
+            const opcao = document.createElement("option");
+
+            opcao.value = atendimento.id;
+
+            opcao.textContent =
+                `${paciente?.full_name || "Paciente nÃ£o encontrado"} - ` +
+                `${atendimento.appointment_date} - ` +
+                `${atendimento.diagnosis || "Sem diagnÃ³stico"}`;
+
+            selecao.appendChild(opcao);
+
+        });
+
+    } catch (error) {
+
+        console.error("Erro ao carregar prontuÃ¡rios:", error);
+
+    }
+}
+
+async function excluirProntuarioSelecionado() {
+
+    const selecao = document.getElementById(
+        "prontuario-selecionado"
+    );
+
+    const atendimentoId = selecao.value;
+
+    if (!atendimentoId) {
+
+        alert("Selecione um atendimento para excluir.");
+
+        return;
+    }
+
+    const confirmar = confirm(
+        "Tem certeza de que deseja excluir este registro clÃ­nico?"
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+
+        await window.MedControl.appointments.remove(atendimentoId);
+
+        alert("Registro clÃ­nico excluÃ­do com sucesso!");
+
+        await carregarProntuarios();
+
+        await carregarAtendimentos();
+
+    } catch (error) {
+
+        console.error("Erro ao excluir prontuÃ¡rio:", error);
+
+        alert("NÃ£o foi possÃ­vel excluir o registro clÃ­nico.");
+
+    }
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\js\validacoes.js =====
+function validarCampoObrigatorio(valor) {
+    return valor !== null &&
+           valor !== undefined &&
+           String(valor).trim() !== "";
+}
+
+function validarEmail(email) {
+    const expressao = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return expressao.test(email);
+}
+
+
+===== C:\Users\EdsonJúnior\Downloads\prontuariomedico-main\protuario-mayks\index.html =====
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Sistema de gerenciamento de prontuÃ¡rios mÃ©dicos.">
+
+    <title>MedControl | ProntuÃ¡rio EletrÃ´nico</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">+</span>
+            <span>MedControl</span>
+        </div>
+
+        <div class="user-info">
+            <div class="user-avatar">DR</div>
+            <div>
+                <strong>Dr. ResponsÃ¡vel</strong>
+                <small>Profissional de saÃºde</small>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout">
+
+        <aside class="sidebar">
+            <nav class="navigation">
+
+                <span class="menu-title">MENU PRINCIPAL</span>
+
+                <a href="#inicio" class="nav-link active">
+                    <span>âŒ‚</span> InÃ­cio
+                </a>
+
+                <a href="#pacientes" class="nav-link">
+                    <span>â™™</span> Pacientes
+                </a>
+
+                <a href="#cadastro" class="nav-link">
+                    <span>ï¼‹</span> Novo prontuÃ¡rio
+                </a>
+
+                <a href="#atendimentos" class="nav-link">
+                    <span>â–¤</span> Atendimentos
+                </a>
+
+                <span class="menu-title">SISTEMA</span>
+
+                <a href="#seguranca" class="nav-link">
+                    <span>â™¢</span> SeguranÃ§a e acesso
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <small>MedControl</small>
+                <small>VersÃ£o acadÃªmica 1.0</small>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <section id="inicio" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">PAINEL DE CONTROLE</span>
+                        <h1>VisÃ£o geral</h1>
+                        <p>Gerenciamento de pacientes e atendimentos mÃ©dicos.</p>
+                    </div>
+
+                    <a href="#cadastro" class="button button-primary">
+                        + Novo paciente
+                    </a>
+                </div>
+
+                <div class="stats-grid">
+
+                    <article class="stat-card">
+                        <div class="stat-icon blue">â™™</div>
+                        <div>
+                            <span>Pacientes cadastrados</span>
+                            <strong>128</strong>
+                            <small>Total de prontuÃ¡rios</small>
+                        </div>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon green">â–¤</div>
+                        <div>
+                            <span>Atendimentos realizados</span>
+                            <strong>356</strong>
+                            <small>HistÃ³rico geral</small>
+                        </div>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon orange">â—·</div>
+                        <div>
+                            <span>Atendimentos recentes</span>
+                            <strong>12</strong>
+                            <small>Ãšltimos registros</small>
+                        </div>
+                    </article>
+
+                </div>
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+                        <div>
+                            <h2>Atendimentos recentes</h2>
+                            <p>Ãšltimos registros realizados no sistema.</p>
+                        </div>
+
+                        <a href="#atendimentos" class="text-link">
+                            Ver todos
+                        </a>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Data</th>
+                                    <th>Modalidade</th>
+                                    <th>Profissional</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>Maria Oliveira</td>
+                                    <td>05/11/2026</td>
+                                    <td><span class="tag presencial">Presencial</span></td>
+                                    <td>Dr. ResponsÃ¡vel</td>
+                                    <td><span class="status completed">ConcluÃ­do</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>JoÃ£o Santos</td>
+                                    <td>04/11/2026</td>
+                                    <td><span class="tag online">Online</span></td>
+                                    <td>Dr. ResponsÃ¡vel</td>
+                                    <td><span class="status completed">ConcluÃ­do</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Ana Costa</td>
+                                    <td>03/11/2026</td>
+                                    <td><span class="tag presencial">Presencial</span></td>
+                                    <td>Dr. ResponsÃ¡vel</td>
+                                    <td><span class="status completed">ConcluÃ­do</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="cadastro" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">CADASTRO</span>
+                        <h1>Novo prontuÃ¡rio</h1>
+                        <p>Preencha os dados para cadastrar um novo paciente.</p>
+                    </div>
+                </div>
+
+                <form id="patient-form" class="content-card patient-form">
+
+                    <div class="form-section">
+                        <h2>Dados pessoais</h2>
+                        <p>InformaÃ§Ãµes de identificaÃ§Ã£o do paciente.</p>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full-width">
+                                <label for="patient-name">Nome completo *</label>
+
+                                <input type="text" id="patient-name" name="patientName"
+                                    placeholder="Digite o nome completo" autocomplete="name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="patient-cpf">CPF *</label>
+
+                                <input type="text" id="patient-cpf" name="patientCpf" placeholder="000.000.000-00"
+                                    inputmode="numeric" maxlength="14" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="patient-birth">Data de nascimento *</label>
+
+                                <input type="date" id="patient-birth" name="patientBirth" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="patient-gender">Sexo</label>
+
+                                <select id="patient-gender" name="patientGender">
+                                    <option value="">Selecione</option>
+                                    <option value="feminino">Feminino</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="nao-informado">Prefere nÃ£o informar</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="patient-phone">Telefone *</label>
+
+                                <input type="tel" id="patient-phone" name="patientPhone" placeholder="(00) 00000-0000"
+                                    autocomplete="tel" required>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="patient-email">E-mail</label>
+
+                                <input type="email" id="patient-email" name="patientEmail"
+                                    placeholder="exemplo@email.com" autocomplete="email">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="patient-address">EndereÃ§o</label>
+
+                                <input type="text" id="patient-address" name="patientAddress"
+                                    placeholder="Rua, nÃºmero, bairro e cidade" autocomplete="street-address">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="form-section">
+
+                        <h2>HistÃ³rico clÃ­nico inicial</h2>
+                        <p>InformaÃ§Ãµes importantes sobre a saÃºde do paciente.</p>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full-width">
+                                <label for="medical-history">HistÃ³rico de saÃºde</label>
+
+                                <textarea id="medical-history" name="medicalHistory" rows="4"
+                                    placeholder="Descreva o histÃ³rico clÃ­nico do paciente..."></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="allergies">Alergias</label>
+
+                                <textarea id="allergies" name="allergies" rows="2"
+                                    placeholder="Informe alergias conhecidas ou ausÃªncia de alergias..."></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="medications">Medicamentos em uso</label>
+
+                                <textarea id="medications" name="medications" rows="2"
+                                    placeholder="Informe medicamentos utilizados pelo paciente..."></textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <span class="required-note">* Campos obrigatÃ³rios</span>
+
+                        <div class="form-actions">
+                            <button type="reset" class="button button-secondary">
+                                Limpar
+                            </button>
+                            <button type="submit" class="button button-primary">
+                                Salvar prontuÃ¡rio
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </section>
+
+            <section id="pacientes" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">GERENCIAMENTO</span>
+                        <h1>Pacientes</h1>
+                        <p>Consulte os pacientes cadastrados no sistema.</p>
+                    </div>
+
+                    <a href="#cadastro" class="button button-primary">
+                        + Novo paciente
+                    </a>
+                </div>
+
+                <div class="content-card">
+
+                    <div class="search-area">
+
+                        <div class="form-group search-field">
+                            <label for="search-patient">Buscar paciente</label>
+
+                            <input type="search" id="search-patient" name="searchPatient"
+                                placeholder="Pesquisar por nome ou CPF...">
+                        </div>
+
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>CPF</th>
+                                    <th>Telefone</th>
+                                    <th>Ãšltimo atendimento</th>
+                                    <th>AÃ§Ãµes</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="patients-table-body">
+                                <tr>
+                                    <td>Maria Oliveira</td>
+                                    <td>000.000.000-00</td>
+                                    <td>(11) 99999-0000</td>
+                                    <td>05/11/2026</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#cadastro" class="text-link" style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>JoÃ£o Santos</td>
+                                    <td>111.111.111-11</td>
+                                    <td>(11) 98888-0000</td>
+                                    <td>04/11/2026</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#cadastro" class="text-link" style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Ana Costa</td>
+                                    <td>222.222.222-22</td>
+                                    <td>(11) 97777-0000</td>
+                                    <td>03/11/2026</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#cadastro" class="text-link" style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="prontuario" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">PRONTUÃRIO ELETRÃ”NICO</span>
+                        <h1>Dados do paciente</h1>
+                        <p>Consulta e acompanhamento do histÃ³rico clÃ­nico.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+
+                    <div class="patient-header">
+                        <div class="patient-avatar">MO</div>
+
+                        <div class="patient-details">
+                            <h2>Maria Oliveira</h2>
+                            <p>CPF: 000.000.000-00</p>
+                            <p>Data de nascimento: 15/05/1990</p>
+                        </div>
+
+                        <span class="status active">ProntuÃ¡rio ativo</span>
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="details-grid">
+
+                        <div>
+                            <span class="detail-label">Telefone</span>
+                            <strong>(11) 99999-0000</strong>
+                        </div>
+
+                        <div>
+                            <span class="detail-label">E-mail</span>
+                            <strong>maria@email.com</strong>
+                        </div>
+
+                        <div>
+                            <span class="detail-label">Alergias</span>
+                            <strong>NÃ£o informado</strong>
+                        </div>
+
+                        <div>
+                            <span class="detail-label">Medicamentos</span>
+                            <strong>NÃ£o informado</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="card-heading">
+                        <div>
+                            <h2>HistÃ³rico de atendimentos</h2>
+                            <p>Registros organizados cronologicamente.</p>
+                        </div>
+
+                        <a href="#novo-atendimento" class="button button-primary">
+                            + Novo atendimento
+                        </a>
+                    </div>
+
+                    <div class="timeline">
+
+                        <article class="timeline-item">
+
+                            <div class="timeline-marker"></div>
+
+                            <div class="timeline-content">
+
+                                <div class="timeline-heading">
+                                    <h3>Consulta de acompanhamento</h3>
+                                    <span class="tag presencial">Presencial</span>
+                                </div>
+
+                                <p class="timeline-date">
+                                    05/11/2026 Ã s 10:30
+                                </p>
+
+                                <p>
+                                    Paciente compareceu para acompanhamento clÃ­nico.
+                                    Apresentou evoluÃ§Ã£o positiva.
+                                </p>
+
+                                <div class="record-meta">
+                                    ResponsÃ¡vel: Dr. ResponsÃ¡vel
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                        <article class="timeline-item">
+
+                            <div class="timeline-marker"></div>
+
+                            <div class="timeline-content">
+
+                                <div class="timeline-heading">
+                                    <h3>Retorno mÃ©dico</h3>
+                                    <span class="tag online">Online</span>
+                                </div>
+
+                                <p class="timeline-date">
+                                    20/10/2026 Ã s 14:00
+                                </p>
+
+                                <p>
+                                    Atendimento remoto para avaliaÃ§Ã£o da evoluÃ§Ã£o
+                                    do tratamento.
+                                </p>
+
+                                <div class="record-meta">
+                                    ResponsÃ¡vel: Dr. ResponsÃ¡vel
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="novo-atendimento" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">REGISTRO CLÃNICO</span>
+                        <h1>Novo atendimento</h1>
+                        <p>Registre as informaÃ§Ãµes da consulta mÃ©dica.</p>
+                    </div>
+                </div>
+
+                <form id="appointment-form" class="content-card">
+
+                    <div class="form-section">
+
+                        <h2>IdentificaÃ§Ã£o do atendimento</h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full-width">
+                                <label for="appointment-patient">Paciente *</label>
+
+                                <select id="appointment-patient" required>
+                                    <option value="">Selecione o paciente</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="appointment-date">Data *</label>
+
+                                <input type="date" id="appointment-date" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="appointment-time">HorÃ¡rio *</label>
+
+                                <input type="time" id="appointment-time" required>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Modalidade *</label>
+
+                                <div class="radio-options">
+
+                                    <label class="radio-label">
+                                        <input type="radio" name="appointmentType" value="presencial" required>
+                                        Presencial
+                                    </label>
+
+                                    <label class="radio-label">
+                                        <input type="radio" name="appointmentType" value="online">
+                                        Online
+                                    </label>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <div class="form-section">
+
+                        <h2>InformaÃ§Ãµes clÃ­nicas</h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full-width">
+                                <label for="diagnosis">DiagnÃ³stico</label>
+
+                                <textarea id="diagnosis" rows="3" placeholder="Descreva o diagnÃ³stico..."></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="prescription">PrescriÃ§Ã£o</label>
+
+                                <textarea id="prescription" rows="3"
+                                    placeholder="Informe as prescriÃ§Ãµes mÃ©dicas..."></textarea>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="observations">ObservaÃ§Ãµes e evoluÃ§Ã£o</label>
+
+                                <textarea id="observations" rows="4"
+                                    placeholder="Registre a evoluÃ§Ã£o e as observaÃ§Ãµes clÃ­nicas..."></textarea>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-footer">
+                        <span class="required-note">* Campos obrigatÃ³rios</span>
+
+                        <div class="form-actions">
+                            <button type="reset" class="button button-secondary">
+                                Limpar
+                            </button>
+
+                            <button type="submit" class="button button-primary">
+                                Registrar atendimento
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </section>
+
+            <section id="atendimentos" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">HISTÃ“RICO CLÃNICO</span>
+                        <h1>Atendimentos</h1>
+                        <p>Consulte os registros de consultas presenciais e remotas.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+
+                    <div class="card-heading">
+                        <div>
+                            <h2>Todos os atendimentos</h2>
+                            <p>HistÃ³rico geral de consultas registradas.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data e hora</th>
+                                    <th>Paciente</th>
+                                    <th>Modalidade</th>
+                                    <th>Profissional</th>
+                                    <th>Registro</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>05/11/2026 - 10:30</td>
+                                    <td>Maria Oliveira</td>
+                                    <td><span class="tag presencial">Presencial</span></td>
+                                    <td>Dr. ResponsÃ¡vel</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#novo-atendimento" class="text-link"
+                                            style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>04/11/2026 - 14:00</td>
+                                    <td>JoÃ£o Santos</td>
+                                    <td><span class="tag online">Online</span></td>
+                                    <td>Dr. ResponsÃ¡vel</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#novo-atendimento" class="text-link"
+                                            style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>03/11/2026 - 09:00</td>
+                                    <td>Ana Costa</td>
+                                    <td><span class="tag presencial">Presencial</span></td>
+                                    <td>Dr. ResponsÃ¡vel</td>
+                                    <td style="display: flex; gap: 10px;">
+                                        <a href="#prontuario" class="text-link">Visualizar</a>
+                                        <a href="#novo-atendimento" class="text-link"
+                                            style="color: var(--warning);">Editar</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="seguranca" class="section">
+
+                <div class="page-heading">
+                    <div>
+                        <span class="subtitle">CONTROLE DE ACESSO</span>
+                        <h1>SeguranÃ§a e acesso</h1>
+                        <p>InformaÃ§Ãµes sobre o profissional responsÃ¡vel pelo sistema.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+
+                    <h2>UsuÃ¡rio conectado</h2>
+
+                    <div class="patient-header">
+                        <div class="user-avatar large">DR</div>
+
+                        <div class="patient-details">
+                            <h3>Dr. ResponsÃ¡vel</h3>
+                            <p>Perfil: Profissional autorizado</p>
+                            <p>IdentificaÃ§Ã£o: USR-001</p>
+                        </div>
+
+                        <span class="status active">Acesso ativo</span>
+                    </div>
+
+                    <div class="form-divider"></div>
+
+                    <h2>Rastreabilidade</h2>
+
+                    <p class="security-description">
+                        Os registros do sistema deverÃ£o identificar o profissional
+                        responsÃ¡vel, a data e o horÃ¡rio de cada operaÃ§Ã£o.
+                    </p>
+
+                    <div class="audit-example">
+
+                        <strong>Exemplo de registro de auditoria</strong>
+
+                        <p>OperaÃ§Ã£o: AtualizaÃ§Ã£o de prontuÃ¡rio</p>
+                        <p>ResponsÃ¡vel: Dr. ResponsÃ¡vel</p>
+                        <p>Data: 05/11/2026</p>
+                        <p>HorÃ¡rio: 10:45</p>
+
+                    </div>
+
+                </div>
+
+                <div class="content-card danger-card">
+
+                    <h2>ExclusÃ£o de prontuÃ¡rio</h2>
+
+                    <p>
+                        Selecione o atendimento que deseja excluir.
+                        O cadastro do paciente e os demais atendimentos serÃ£o mantidos.
+                    </p>
+
+                    <div class="form-group">
+                        <label for="prontuario-selecionado">Atendimento</label>
+                        <select id="prontuario-selecionado">
+                            <option value="">Carregando atendimentos...</option>
+                        </select>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="excluir-prontuario"
+                        class="button button-danger">
+                        Excluir prontuÃ¡rio selecionado
+                    </button>
+
+                    <small>
+                        A exclusÃ£o exige confirmaÃ§Ã£o e remove somente o atendimento selecionado.
+                    </small>
+
+                </div>
+
+            </section>
+
+            <footer class="footer">
+                <p>MedControl Â© 2026 â€” Projeto acadÃªmico de prontuÃ¡rio eletrÃ´nico.</p>
+            </footer>
+
+        </main>
+
+    </div>
+
+    <!-- Biblioteca do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Cliente de comunicaÃ§Ã£o com o Supabase -->
+    <script src="./js/medcontrol-api.js"></script>
+
+    <!-- Arquivos das funcionalidades -->
+    <script src="./js/dashboard.js"></script>
+    <script src="./js/pacientes.js"></script>
+    <script src="./js/prontuarios.js"></script>
+    <script src="./js/atendimentos.js"></script>
+    <script src="./js/historico.js"></script>
+    <script src="./js/validacoes.js"></script>
+
+    <!-- InicializaÃ§Ã£o do sistema -->
+    <script src="./js/app.js"></script>
+
+</body>
+
+</html>
+

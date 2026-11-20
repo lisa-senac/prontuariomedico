@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Acesso ao sistema MedControl.">
+    <title>MedControl | Login</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--background);
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+        }
+
+        .login-card .logo {
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .login-card h1 {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .login-card .subtitle {
+            display: block;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .login-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .login-tabs button {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            background-color: white;
+            border-radius: 7px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: 0.2s;
+        }
+
+        .login-tabs button.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .login-message {
+            font-size: 12px;
+            margin-top: 14px;
+            min-height: 18px;
+            text-align: center;
+        }
+
+        .login-message.error {
+            color: var(--danger);
+        }
+
+        .login-message.success {
+            color: var(--success);
+        }
+
+        .login-field {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+
+            <div class="logo">
+                <span class="logo-icon">+</span>
+                <span>MedControl</span>
+            </div>
+
+            <h1>Prontuário Eletrônico</h1>
+            <span class="subtitle">Acesso restrito a profissionais autorizados</span>
+
+            <div class="login-tabs">
+                <button type="button" id="tab-login" class="active">Entrar</button>
+                <button type="button" id="tab-signup">Cadastrar</button>
+            </div>
+
+            <form id="login-form" novalidate>
+
+                <div class="form-group login-field">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email"
+                        placeholder="exemplo@email.com"
+                        autocomplete="email" required>
+                </div>
+
+                <div class="form-group login-field">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha"
+                        placeholder="Mínimo de 6 caracteres"
+                        minlength="6"
+                        autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" id="btn-submit"
+                    class="button button-primary"
+                    style="width: 100%; margin-top: 8px;">
+                    Entrar
+                </button>
+
+                <p id="login-message" class="login-message"></p>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- SDK do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Cliente MedControl (mesmo usado pelo index) -->
+    <script src="./js/medcontrol-api.js"></script>
+
+    <script>
+        (function () {
+            "use strict";
+
+            // ---- 1. Se já está logado, vai direto para o sistema ----
+            (async function () {
+                try {
+                    const usuario = await window.MedControl.auth.currentUser();
+                    if (usuario) {
+                        window.location.href = "index.html";
+                    }
+                } catch (erro) {
+                    console.warn("Verificação inicial de sessão falhou:", erro);
+                }
+            })();
+
+            // ---- 2. Controle de abas Entrar / Cadastrar ----
+            let modoAtual = "login"; // "login" | "signup"
+
+            const abaLogin = document.getElementById("tab-login");
+            const abaSignup = document.getElementById("tab-signup");
+            const formulario = document.getElementById("login-form");
+            const campoEmail = document.getElementById("email");
+            const campoSenha = document.getElementById("senha");
+            const botaoSubmit = document.getElementById("btn-submit");
+            const mensagem = document.getElementById("login-message");
+
+            function limparMensagem() {
+                mensagem.textContent = "";
+                mensagem.className = "login-message";
+            }
+
+            function exibirMensagem(texto, tipo) {
+                mensagem.textContent = texto;
+                mensagem.className = "login-message" + (tipo ? " " + tipo : "");
+            }
+
+            function alternarModo(novoModo) {
+                modoAtual = novoModo;
+                const estaLogando = modoAtual === "login";
+
+                abaLogin.classList.toggle("active", estaLogando);
+                abaSignup.classList.toggle("active", !estaLogando);
+
+                botaoSubmit.textContent = estaLogando ? "Entrar" : "Criar conta";
+
+                campoSenha.autocomplete =
+                    estaLogando ? "current-password" : "new-password";
+
+                limparMensagem();
+            }
+
+            abaLogin.addEventListener("click", function () {
+                alternarModo("login");
+            });
+
+            abaSignup.addEventListener("click", function () {
+                alternarModo("signup");
+            });
+
+            // ---- 3. Envio do formulário ----
+            formulario.addEventListener("submit", async function (evento) {
+                evento.preventDefault();
+                limparMensagem();
+
+                const email = campoEmail.value.trim();
+                const senha = campoSenha.value;
+
+                if (!email || !senha) {
+                    exibirMensagem("Preencha e-mail e senha.", "error");
+                    return;
+                }
+
+                if (senha.length < 6) {
+                    exibirMensagem("A senha deve ter pelo menos 6 caracteres.", "error");
+                    return;
+                }
+
+                botaoSubmit.disabled = true;
+                botaoSubmit.textContent =
+                    modoAtual === "login" ? "Entrando..." : "Criando conta...";
+
+                try {
+                    if (modoAtual === "login") {
+                        await window.MedControl.auth.signIn(email, senha);
+                        exibirMensagem("Login realizado! Redirecionando...", "success");
+
+                        setTimeout(function () {
+                            window.location.href = "index.html";
+                        }, 600);
+
+                    } else {
+                        await window.MedControl.auth.signUp(email, senha);
+                        exibirMensagem(
+                            "Conta criada! Faça login para acessar o sistema.",
+                            "success"
+                        );
+
+                        // Já preenche o modo login para o usuário tentar
+                        alternarModo("login");
+                        exibirMensagem(
+                            "Conta criada! Faça login para acessar o sistema.",
+                            "success"
+                        );
+                    }
+                } catch (erro) {
+                    console.error("[Login] Erro:", erro);
+
+                    let texto = erro?.message || "Falha na autenticação.";
+
+                    if (/Invalid login credentials/i.test(texto)) {
+                        texto = "E-mail ou senha inválidos.";
+                    } else if (/Email not confirmed/i.test(texto)) {
+                        texto = "E-mail ainda não confirmado. Verifique sua caixa de entrada.";
+                    } else if (/User already registered/i.test(texto)) {
+                        texto = "Este e-mail já está cadastrado. Use a aba Entrar.";
+                    }
+
+                    exibirMensagem(texto, "error");
+                } finally {
+                    botaoSubmit.disabled = false;
+                    botaoSubmit.textContent =
+                        modoAtual === "login" ? "Entrar" : "Criar conta";
+                }
+            });
+
+        })();
+    </script>
+
+</body>
+
+</html>

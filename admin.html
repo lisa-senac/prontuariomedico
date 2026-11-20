@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>MedControl | Administração</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-wrapper { padding: 40px; max-width: 1000px; margin: 0 auto; }
+        .user-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .user-table th, .user-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge.admin { background: #fee2e2; color: #991b1b; }
+        .badge.medico { background: #dbeafe; color: #1e40af; }
+        .badge.atendente { background: #d1fae5; color: #065f46; }
+        .badge.pendente { background: #fef3c7; color: #92400e; }
+        
+        .action-buttons { display: flex; gap: 8px; }
+        .input-edit-nome { padding: 6px; border: 1px solid var(--border); border-radius: 4px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <div class="page-heading">
+            <div>
+                <span class="subtitle">RESTRITO</span>
+                <h1>Gerenciar Equipe</h1>
+                <p>Cadastre, edite e defina as permissões dos profissionais.</p>
+            </div>
+            <a href="index.html" class="button button-secondary">Voltar ao Sistema</a>
+        </div>
+
+        <div class="content-card">
+            <h2>Cadastrar Novo Funcionário</h2>
+            <form id="form-cadastro-user" style="margin-top: 15px;">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Nome Completo *</label>
+                        <input type="text" id="novo-nome" placeholder="Ex: Dr. João Silva" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail *</label>
+                        <input type="email" id="novo-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha Inicial *</label>
+                        <input type="password" id="nova-senha" minlength="6" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Cargo *</label>
+                        <select id="novo-cargo" required>
+                            <option value="medico">Médico</option>
+                            <option value="atendente">Atendente</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="button button-primary" style="margin-top: 15px;">Criar Conta</button>
+            </form>
+        </div>
+
+        <div class="content-card">
+            <h2>Equipe do Hospital</h2>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Nome / E-mail</th>
+                        <th>Cargo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-usuarios">
+                    <!-- Preenchido via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./js/medcontrol-api.js"></script>
+    <script>
+        // Variável para controlar qual usuário está sendo editado no momento
+        let usuarioEditandoId = null;
+
+        // Verifica se é admin
+        (async () => {
+            try {
+                const perfil = await window.MedControl.profiles.getMeuPerfil();
+                if (!perfil || perfil.role !== 'admin' || perfil.status === 'suspenso') {
+                    alert("Acesso negado.");
+                    window.location.href = "index.html";
+                    return;
+                }
+                carregarUsuarios();
+            } catch (e) {
+                window.location.href = "login.html";
+            }
+        })();
+
+        async function carregarUsuarios() {
+            const tbody = document.getElementById("lista-usuarios");
+            tbody.innerHTML = "<tr><td colspan='3'>Carregando...</td></tr>";
+            
+            try {
+                const usuarios = await window.MedControl.profiles.listar();
+                tbody.innerHTML = "";
+                
+                usuarios.forEach(u => {
+                    const tr = document.createElement("tr");
+                    
+                    // Se o usuário atual for o que está sendo editado, mostra o input de texto
+                    const isEditing = usuarioEditandoId === u.id;
+                    
+                    const conteudoNome = isEditing 
+                        ? `<input type="text" id="edit-nome-${u.id}" class="input-edit-nome" value="${u.full_name || ''}" placeholder="Nome do profissional">
+                           <button class="button button-primary" style="margin-top: 5px; padding: 4px 8px; font-size: 11px;" onclick="salvarEdicaoNome('${u.id}')">Salvar Nome</button>`
+                        : `<strong>${u.full_name || 'Sem nome cadastrado'}</strong><br><small>${u.email}</small>`;
+
+                    const tagStatus = u.status === 'suspenso' 
+                        ? `<span class="badge" style="background: #fee2e2; color: #991b1b; margin-left: 5px;">SUSPENSO</span>` 
+                        : "";
+
+                    const textoBotaoSuspender = u.status === 'suspenso' ? "Ativar" : "Suspender";
+                    const corBotaoSuspender = u.status === 'suspenso' ? "var(--success)" : "var(--danger)";
+
+                    // Botões de ação
+                    let botoesAcao = "";
+                    if (isEditing) {
+                        botoesAcao = `<button class="button button-secondary" onclick="cancelarEdicao()">Cancelar</button>`;
+                    } else {
+                        botoesAcao = `
+                            <button class="button button-secondary" onclick="prepararEdicao('${u.id}')">Editar Nome</button>
+                            <button class="button button-secondary" onclick="alternarStatus('${u.id}', '${u.status}')" style="color: ${corBotaoSuspender}; border-color: ${corBotaoSuspender};">
+                                ${textoBotaoSuspender}
+                            </button>
+                        `;
+                    }
+
+                    tr.innerHTML = `
+                        <td>${conteudoNome} ${tagStatus}</td>
+                        <td>
+                            <select onchange="mudarCargo('${u.id}', this.value)" style="padding: 5px;" ${isEditing ? 'disabled' : ''}>
+                                <option value="pendente" ${u.role === 'pendente' ? 'selected' : ''}>Pendente</option>
+                                <option value="medico" ${u.role === 'medico' ? 'selected' : ''}>Médico</option>
+                                <option value="atendente" ${u.role === 'atendente' ? 'selected' : ''}>Atendente</option>
+                                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                ${botoesAcao}
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML = "<tr><td colspan='3'>Erro ao carregar.</td></tr>";
+            }
+        }
+
+        // Função que coloca a linha em modo de edição
+        function prepararEdicao(id) {
+            usuarioEditandoId = id;
+            carregarUsuarios(); // Recarrega a tabela para mostrar o input
+        }
+
+        // Função que cancela a edição
+        function cancelarEdicao() {
+            usuarioEditandoId = null;
+            carregarUsuarios();
+        }
+
+        // Função que salva o nome no banco de dados
+        async function salvarEdicaoNome(id) {
+            const input = document.getElementById(`edit-nome-${id}`);
+            const novoNome = input.value.trim();
+
+            if (!novoNome) {
+                alert("O nome não pode ficar vazio.");
+                return;
+            }
+
+            try {
+                const { error } = await window.MedControl.client
+                    .from("profiles")
+                    .update({ full_name: novoNome })
+                    .eq("id", id);
+
+                if (error) throw error;
+
+                alert("Nome atualizado com sucesso!");
+                usuarioEditandoId = null; // Sai do modo de edição
+                carregarUsuarios(); // Atualiza a tabela
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao salvar o nome.");
+            }
+        }
+
+        // Cadastro de Novo Usuário
+        document.getElementById("form-cadastro-user").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const nome = document.getElementById("novo-nome").value;
+            const email = document.getElementById("novo-email").value;
+            const senha = document.getElementById("nova-senha").value;
+            const cargo = document.getElementById("novo-cargo").value;
+            const btn = e.target.querySelector('button[type="submit"]');
+
+            btn.disabled = true;
+            btn.textContent = "Criando...";
+
+            try {
+                const { data, error } = await window.MedControl.client.auth.signUp({ email, password: senha });
+                if (error) throw error;
+
+                if (data.user) {
+                    try {
+                        await window.MedControl.profiles.atualizarCargo(data.user.id, cargo);
+                    } catch (errUpdate) {
+                        await window.MedControl.profiles.criarPerfilFallback(data.user.id, data.user.email, cargo);
+                    }
+                    
+                    // Salva o nome completo no perfil
+                    await window.MedControl.client.from("profiles").update({ full_name: nome }).eq("id", data.user.id);
+                }
+                
+                alert("Funcionário cadastrado com sucesso!");
+                await window.MedControl.auth.signOut();
+                window.location.href = "login.html";
+                
+            } catch (err) {
+                console.error(err);
+                alert("Erro: " + err.message);
+                btn.disabled = false;
+                btn.textContent = "Criar Conta";
+            }
+        });
+
+        async function mudarCargo(id, novoCargo) {
+            try {
+                await window.MedControl.profiles.atualizarCargo(id, novoCargo);
+                alert("Cargo atualizado!");
+                carregarUsuarios();
+            } catch (err) {
+                alert("Erro ao atualizar cargo.");
+            }
+        }
+
+        async function alternarStatus(id, statusAtual) {
+            if (!confirm("Deseja alterar o status deste usuário?")) return;
+            const novoStatus = statusAtual === 'suspenso' ? 'ativo' : 'suspenso';
+            try {
+                await window.MedControl.client.from("profiles").update({ status: novoStatus }).eq("id", id);
+                alert("Status atualizado!");
+                carregarUsuarios();
+            } catch (err) {
+                alert("Erro ao alterar status.");
+            }
+        }
+    </script>
+</body>
+</html>

@@ -459,11 +459,13 @@ th {
 
 td {
     padding: 15px 12px;
-
     border-bottom: 1px solid var(--border);
-
     color: var(--text);
     font-size: 12px;
+    white-space: nowrap; /* Mantém o texto em uma linha */
+    overflow: hidden;    /* Esconde o excesso */
+    text-overflow: ellipsis; /* Coloca "..." no final */
+    max-width: 200px; /* Limita a largura para não empurrar as outras colunas */
 }
 
 tbody tr:hover {
